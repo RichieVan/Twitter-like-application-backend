@@ -14,7 +14,7 @@ import ErrorMiddleware from './middlewares/ErrorMiddleware.js';
 import TokenService from './services/TokenService.js';
 
 const app = express();
-const port = 8101;
+const port = process.env.PORT;
 export const ApiFolderPath = dirname(fileURLToPath(import.meta.url));
 
 //app.use();
