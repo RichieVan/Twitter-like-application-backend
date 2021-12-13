@@ -19,7 +19,7 @@ export const ApiFolderPath = dirname(fileURLToPath(import.meta.url));
 
 //app.use();
 app.use((req, res, next) => { //must use cors() instead
-    //res.append('Access-Control-Allow-Origin', [process.env.APP_URL]),
+    res.append('Access-Control-Allow-Origin', [process.env.APP_URL]),
     res.append('Access-Control-Allow-Methods', ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
     res.append('Access-Control-Allow-Headers', ['Content-Type', 'Authorization']);
     res.append('Access-Control-Allow-Credentials', true);
