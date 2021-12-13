@@ -1,10 +1,5 @@
 import nodemailer from 'nodemailer';
 
-console.log(process.env.SMTP_HOST);
-console.log(process.env.SMTP_PORT);
-console.log(process.env.SMTP_USER);
-console.log(process.env.SMTP_PASS);
-
 class MailService {
     constructor () {
         this.transporter = nodemailer.createTransport({
