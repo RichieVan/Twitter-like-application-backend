@@ -18,7 +18,7 @@ class PostService {
         })
 
         
-        if (data.post !== null) {
+        if (data.from !== null) {
             const posts = await sequelize.query(
                 `
                 SELECT "posts".*, COUNT(DISTINCT "likes"."id") as "likesCount", COUNT(DISTINCT "comments"."id") as "commentsCount", false as "currentUserLiked"
