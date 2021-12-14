@@ -9,29 +9,38 @@ const {Op, QueryTypes, Model, Sequelize} = sqlz;
 
 class PostService {
     async create (data) {
-        await sequelize.models.post.create({
+        let result;
+        
+        const newPost = await sequelize.models.post.create({
             textContent : data.textContent,
             userId: data.userId,
             type: 'post'
         })
 
-        const posts = await sequelize.query(
-            `
-            SELECT "posts".*, COUNT(DISTINCT "likes"."id") as "likesCount", COUNT(DISTINCT "comments"."id") as "commentsCount", false as "currentUserLiked"
-                FROM public.posts
-                LEFT JOIN public.likes on "posts"."id" = "likes"."postId"
-                LEFT JOIN public.comments on "posts"."id" = "comments"."postId"
-                WHERE "posts"."type" = 'post' and "posts"."createdAt" >= :fromTimestamp and "posts"."id" >= :fromId
-                GROUP BY "posts"."id"
-                ORDER BY "posts"."createdAt" DESC;
-            `,
-            {
-                replacements : {...data.from},
-                type : QueryTypes.SELECT
-            }
-        )
+        
+        if (data.post !== null) {
+            const posts = await sequelize.query(
+                `
+                SELECT "posts".*, COUNT(DISTINCT "likes"."id") as "likesCount", COUNT(DISTINCT "comments"."id") as "commentsCount", false as "currentUserLiked"
+                    FROM public.posts
+                    LEFT JOIN public.likes on "posts"."id" = "likes"."postId"
+                    LEFT JOIN public.comments on "posts"."id" = "comments"."postId"
+                    WHERE "posts"."type" = 'post' and "posts"."createdAt" >= :fromTimestamp and "posts"."id" >= :fromId
+                    GROUP BY "posts"."id"
+                    ORDER BY "posts"."createdAt" DESC;
+                `,
+                {
+                    replacements : {...data.from},
+                    type : QueryTypes.SELECT
+                }
+            )
+            result = posts;
+        } else {
+            result = [newPost];
+        }
+        
 
-        const content = await this.formatPosts(posts);
+        const content = await this.formatPosts(result);
         return content;
     }
 
