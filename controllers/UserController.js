@@ -47,7 +47,7 @@ class UserController {
             const refreshToken = req.cookies.refreshToken;
             const userData = await UserService.refresh(refreshToken);
             res.cookie('refreshToken', userData.refreshToken, refreshTokenCookieOptions);
-p
+
             res.status(200).json(userData);
         } catch (e) {
             res.clearCookie('refreshToken');
