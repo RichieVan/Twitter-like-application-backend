@@ -7,8 +7,6 @@ const refreshTokenCookieOptions = {
     sameSite : false
 }
 
-console.log(refreshTokenCookieOptions);
-
 class UserController {
     async registration (req, res, next) {
         try {
