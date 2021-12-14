@@ -6,6 +6,8 @@ const refreshTokenCookieOptions = {
     httpOnly : true
 }
 
+console.log(refreshTokenCookieOptions);
+
 class UserController {
     async registration (req, res, next) {
         try {
