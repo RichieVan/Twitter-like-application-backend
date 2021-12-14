@@ -3,7 +3,8 @@ import UserService from "../services/UserService.js";
 const refreshTokenCookieOptions = {
     maxAge : process.env.REFRESH_ALIVE_DAYS * 24 * 60 * 60 * 1000,
     secure : process.env.NODE_ENV !== "development",
-    httpOnly : true
+    httpOnly : true,
+    sameSite : false
 }
 
 console.log(refreshTokenCookieOptions);
