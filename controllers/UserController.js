@@ -1,13 +1,16 @@
-import TokenService from "../services/TokenService.js";
 import UserService from "../services/UserService.js";
 
-const refreshTokenMaxAge = process.env.REFRESH_ALIVE_DAYS * 24 * 60 * 60 * 1000;
+const refreshTokenCookieOptions = {
+    maxAge : process.env.REFRESH_ALIVE_DAYS * 24 * 60 * 60 * 1000,
+    secure : process.env.NODE_ENV !== "development",
+    httpOnly : true
+}
 
 class UserController {
     async registration (req, res, next) {
         try {
             const userData = await UserService.register(req.body);
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: refreshTokenMaxAge, secure: true});
+            res.cookie('refreshToken', userData.refreshToken, refreshTokenCookieOptions);
 
             res.status(201).json(userData);
         } catch (e) {
@@ -18,7 +21,7 @@ class UserController {
     async login (req, res, next) {
         try {
             const userData = await UserService.login(req.body);
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: refreshTokenMaxAge, secure: true});
+            res.cookie('refreshToken', userData.refreshToken, refreshTokenCookieOptions);
 
             res.status(200).json(userData);
         } catch (e) {
@@ -42,7 +45,7 @@ class UserController {
         try {
             const refreshToken = req.cookies.refreshToken;
             const userData = await UserService.refresh(refreshToken);
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: refreshTokenMaxAge, secure: true});
+            res.cookie('refreshToken', userData.refreshToken, refreshTokenCookieOptions);
 p
             res.status(200).json(userData);
         } catch (e) {
@@ -59,7 +62,7 @@ p
         try {
             const avatar = req.body.data;
             const userData = await UserService.updateAvatar(avatar, req.user.id, req.cookies.refreshToken);
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: refreshTokenMaxAge, secure: true});
+            res.cookie('refreshToken', userData.refreshToken, refreshTokenCookieOptions);
 
             res.status(200).json(userData);
         } catch (e) {
@@ -106,7 +109,7 @@ p
     async updateUser (req, res, next) {
         try {
             const userData = await UserService.updateUser(req.body, req.user.id, req.cookies.refreshToken);
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: refreshTokenMaxAge, secure: true});
+            res.cookie('refreshToken', userData.refreshToken, refreshTokenCookieOptions);
 
             res.status(200).json(userData);
         } catch (e) {
