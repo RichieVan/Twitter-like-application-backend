@@ -68,8 +68,8 @@ class UserService {
     async register (data) {
         const user = await this.validateRegister(data);
 
-        await MailService.sendActivationMail(user.email, user.id, user.activationLink);
         await user.save();
+        await MailService.sendActivationMail(user.email, user.id, user.activationLink);
         
         const userDataWithTokens = await this.getNewUserDtoWithTokens(user);
         return userDataWithTokens;

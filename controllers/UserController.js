@@ -74,7 +74,7 @@ class UserController {
     async activate (req, res, next) {
         try {
             const status = await UserService.activate(req.query.user, req.query.link);
-            res.redirect(process.env.APP_URL + `/?activate=${status}`);
+            res.redirect(process.env.APP_URL);
         } catch (e) {
             next(e);
         }
