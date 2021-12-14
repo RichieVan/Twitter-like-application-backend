@@ -8,36 +8,17 @@ import sqlz from 'sequelize';
 const {QueryTypes, Model} = sqlz;
 
 class PostService {
-    async create (data) {
+    async create (user, data) {
         let result;
         
-        const newPost = await sequelize.models.post.create({
+        await sequelize.models.post.create({
             textContent : data.textContent,
             userId: data.userId,
             type: 'post'
         })
         
-        if (data.from.fromTimestamp && data.from.fromId) {
-            const posts = await sequelize.query(
-                `
-                SELECT "posts".*, COUNT(DISTINCT "likes"."id") as "likesCount", COUNT(DISTINCT "comments"."id") as "commentsCount", false as "currentUserLiked"
-                    FROM public.posts
-                    LEFT JOIN public.likes on "posts"."id" = "likes"."postId"
-                    LEFT JOIN public.comments on "posts"."id" = "comments"."postId"
-                    WHERE "posts"."type" = 'post' and "posts"."createdAt" >= :fromTimestamp and "posts"."id" >= :fromId
-                    GROUP BY "posts"."id"
-                    ORDER BY "posts"."createdAt" DESC;
-                `,
-                {
-                    replacements : {...data.from},
-                    type : QueryTypes.SELECT
-                }
-            )
-            result = posts;
-        } else {
-            result = [newPost];
-        }
-        
+        result = await this.syncPosts(user, data.params);
+        return result;
 
         const content = await this.formatPosts(result);
         return content;
@@ -226,7 +207,7 @@ class PostService {
     }
 
     async syncPosts (user, params) {
-        params.forSubs = params.forSubs == 'true';
+        params.forSubs = params?.forSubs == 'true';
         const posts = await sequelize.query(
             `
             SELECT "posts".*, COUNT(DISTINCT "likes"."id") as "likesCount", COUNT(DISTINCT "comments"."id") as "commentsCount", false as "currentUserLiked"
