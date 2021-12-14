@@ -5,7 +5,7 @@ import PostDto from "../dtos/PostDto.js";
 import UserDto from "../dtos/UserDto.js";
 
 import sqlz from 'sequelize';
-const {Op, QueryTypes, Model, Sequelize} = sqlz;
+const {QueryTypes, Model} = sqlz;
 
 class PostService {
     async create (data) {
@@ -16,7 +16,6 @@ class PostService {
             userId: data.userId,
             type: 'post'
         })
-
         
         if (data.from !== null) {
             const posts = await sequelize.query(
