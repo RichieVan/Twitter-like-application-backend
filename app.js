@@ -36,18 +36,17 @@ app.use(ErrorMiddleware)
 try {
     await sequelize.authenticate();
     await sequelize.sync({alter : true});
+    await sequelize.query(
+        `
+            UPDATE public.users
+            SET avatar='default'
+            WHERE id > 0;
+        `
+    )
+
     app.listen(port, () => {
         console.log(`App listening at localhost:${port}`);
-
-        await sequelize.query(
-            `
-                UPDATE public.users
-                SET avatar='default'
-                WHERE id > 0;
-            `
-        )
-
-
+        
         TokenService.deleteExpiredTokens();
         setInterval(() => {
             TokenService.deleteExpiredTokens();
