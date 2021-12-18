@@ -19,7 +19,9 @@ export default class UserDto {
         this.currentUserSubscribed = data.currentUserSubscribed; 
         this.avatar = {
             name : data.avatar,
-            url : process.env.BASE_URL + `/uploads/avatar/${data.avatar}.png`
+            url : data.avatar !== 'default' 
+                ? process.env.IMG_URL + `/${data.avatar}.png` 
+                : process.env.IMG_URL + `/${process.env.IMG_DEFAULT_HASH}.png`
         };
     }
 }

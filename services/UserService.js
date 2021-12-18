@@ -231,12 +231,11 @@ class UserService {
         });
 
         if (userData.avatar !== user.avatar) {
-            const avatarLink = uuid.v4();
-            await FileService.save('public/uploads/avatar', avatarLink, 'png', userData.avatar)
+            const avatarHash = await FileService.uploadImageAndSave(userData.avatar)
             if (user.avatar !== 'default') {
-                await FileService.delete('public/uploads/avatar', user.avatar, 'png');
-            }    
-            userData.avatar = avatarLink;
+                await FileService.deleteImage(user.avatar)
+            }
+            userData.avatar = avatarHash;
         }
         
         user.set(userData)
