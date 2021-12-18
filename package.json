@@ -21,7 +21,7 @@
     "nodemon": "^2.0.13"
   },
   "scripts": {
-    "dev": "nodemon --require dotenv/config app.js dotenv_config_path=/devconfig/.env",
+    "dev": "nodemon --require dotenv/config app.js",
     "start": "node --require dotenv/config app.js"
   },
   "author": "",
