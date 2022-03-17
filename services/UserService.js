@@ -11,36 +11,6 @@ import ApiError from '../exceptions/ApiError.js';
 import FileService from './FileService.js';
 
 class UserService {
-    // async register (data) {
-    //     const existingUser = await sequelize.models.user.findOne({
-    //         where: {
-    //             [Op.or] : [
-    //                 {email : data.email},
-    //                 {login : data.login}
-    //             ]
-    //         }
-    //     });
-        
-    //     if (!existingUser) {
-    //         const hashedPassword = await argon2.hash(data.password);
-    //         const activationLink = uuid.v4();
-    //         const user = await sequelize.models.user.create({
-    //             username: data.login, 
-    //             passhash: hashedPassword,
-    //             login: data.login, //will be modified
-    //             email: data.email,
-    //             activationLink: activationLink
-    //         })
-
-    //         await MailService.sendActivationMail(data.email, user.id, activationLink);
-            
-    //         const userDataWithTokens = await this.getNewUserDtoWithTokens(user);
-    //         return userDataWithTokens;
-    //     } else {
-    //         throw ApiError.BadRequest('Пользователь с данным логином или E-mail\'ом уже существует')
-    //     }
-    // }
-
     async validateRegister (data) {
         if (data.password !== data.passwordRepeat) {
             throw ApiError.BadRequest('', ['Пароли не совпадают'])
@@ -104,7 +74,6 @@ class UserService {
             }
         });
 
-        //if (!user) throw ApiError.BadRequest('Неверная ссылка активации');
         if (!user) return false;
         
         user.setDataValue('isActivated', true);
@@ -115,9 +84,6 @@ class UserService {
 
     async sendNewActivationMail (userId) {
         const user = await sequelize.models.user.findByPk(userId);
-
-        // console.log(user.mailResendCooldown);
-        // console.log(new Date());
 
         if (user.mailResendCooldown && user.mailResendCooldown > new Date()) {
             return user.mailResendCooldown;
