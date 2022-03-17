@@ -230,7 +230,7 @@ class UserService {
             where: {id : userId}
         });
 
-        if (userData.avatar !== user.avatar) {
+        if (userData.avatar && userData.avatar !== user.avatar) {
             const avatarHash = await FileService.uploadImageAndSave(userData.avatar)
             if (user.avatar !== 'default') {
                 await FileService.deleteImage(user.avatar)
