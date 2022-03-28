@@ -4,9 +4,9 @@ export default class UserDto {
     login;
     username;
     isActivated;
-    avatar;
-    about;
     role;
+    about;
+    avatar;
 
     constructor(data) {
         this.id = data.id;

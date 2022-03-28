@@ -19,8 +19,8 @@ export default class PostDto {
             username : userData.username,
             avatar : userData.avatar,
         }
-        this.commentsCount = postData.commentsCount;
-        this.likesCount = postData.likesCount;
+        this.commentsCount = Number(postData.commentsCount);
+        this.likesCount = Number(postData.likesCount);
         this.currentUserLiked = postData.currentUserLiked;
     }
 }

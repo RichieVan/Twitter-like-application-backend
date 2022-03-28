@@ -291,19 +291,19 @@ class PostService {
         })
 
         let comments;
-        if (commentData.from > 0) {
+        if (commentData.params) {
             comments = await sequelize.query(
                 `
                 SELECT "posts".*, COUNT(DISTINCT "likes"."id") as "likesCount", false as "currentUserLiked"
                     FROM public.comments
                     INNER JOIN (public.posts LEFT JOIN public.likes on "posts"."id" = "likes"."postId") on "posts"."id" = "comments"."commentId"
-                    WHERE "posts"."type" = 'comment' and "posts"."createdAt" >= :fromTimestamp and "posts"."id" >= :fromId and "comments"."postId" = :postId
+                    WHERE "posts"."type" = 'comment' and "posts"."createdAt" >= :fromTimestamp and "posts"."id" > :fromId and "comments"."postId" = :postId
                     GROUP BY "posts"."id"
                     ORDER BY "posts"."createdAt" DESC, "posts"."id" DESC;
                 `,
                 {
                     replacements : {
-                        ...data.from, 
+                        ...commentData.params, 
                         postId : commentData.postId
                     },
                     type : QueryTypes.SELECT
@@ -483,7 +483,7 @@ class PostService {
         };
     }
 
-    async syncUserPosts (user, targetUserId, from) {
+    async syncUserPosts (user, targetUserId, params) {
         const posts = await sequelize.query(
             `
             SELECT "posts".*, COUNT(DISTINCT "likes"."id") as "likesCount", COUNT(DISTINCT "comments"."id") as "commentsCount", false as "currentUserLiked"
@@ -497,7 +497,7 @@ class PostService {
             {
                 replacements : {
                     targetUserId,
-                    ...from
+                    ...params
                 },
                 type : QueryTypes.SELECT
             }
@@ -511,7 +511,7 @@ class PostService {
         return content;
     }
 
-    async loadMoreUserPosts (user, targetUserId, from) {
+    async loadMoreUserPosts (user, targetUserId, params) {
         let canLoadMore = false;
         const posts = await sequelize.query(
             `
@@ -527,7 +527,7 @@ class PostService {
             {
                 replacements : {
                     targetUserId,
-                    ...from
+                    ...params
                 },
                 type : QueryTypes.SELECT
             }

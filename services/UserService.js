@@ -61,6 +61,7 @@ class UserService {
         return userDataWithTokens;
     }
 
+    // @TODO удалить бесполезный функционал
     async logout (refreshToken) {
         const count = await TokenService.clearToken(refreshToken);
         return count;
@@ -145,7 +146,7 @@ class UserService {
                 }
             })
 
-            if (currentUserSubscribed) userData.setDataValue('currentUserSubscribed', true);
+            userData.setDataValue('currentUserSubscribed', currentUserSubscribed ? true : false);
         }
 
         const userDto = new UserDto(userData);
@@ -196,12 +197,14 @@ class UserService {
             where: {id : userId}
         });
 
-        if (userData.avatar && userData.avatar !== user.avatar) {
-            const avatarHash = await FileService.uploadImageAndSave(userData.avatar)
+        if (userData.avatar?.data) {
+            const avatarHash = await FileService.uploadImageAndSave(userData.avatar.data)
             if (user.avatar !== 'default') {
                 await FileService.deleteImage(user.avatar)
             }
             userData.avatar = avatarHash;
+        } else {
+            userData.avatar = userData.avatar.name;
         }
         
         user.set(userData)

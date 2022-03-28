@@ -52,7 +52,7 @@ class TokenService {
 
     async clearToken (refreshToken) {
         try {
-            const dbData = await sequelize.models.token.destroy({where:{refreshToken}});
+            const dbData = await sequelize.models.token.destroy({ where: { refreshToken } });
             return true;
         } catch (e) {
             console.log(e);
