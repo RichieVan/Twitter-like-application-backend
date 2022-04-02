@@ -5,7 +5,7 @@ export default function CalculatePostTimestamps (timestamp) {
     let diffTimestamp = (Date.now() - Date.parse(timestamp));
 
     const createdDate = new Date(Date.parse(timestamp));
-    const titleTime = addLeadZero(createdDate.getDate()) + '.' + addLeadZero(createdDate.getMonth() + 1) + '.' + createdDate.getFullYear() + ' ' + createdDate.getHours() + ':' + createdDate.getMinutes();
+    const titleTime = addLeadZero(createdDate.getDate()) + '.' + addLeadZero(createdDate.getMonth() + 1) + '.' + createdDate.getFullYear() + ' ' + addLeadZero(createdDate.getHours()) + ':' + addLeadZero(createdDate.getMinutes());
     const viewTime = convertTimeForView(diffTimestamp);
 
     return {
