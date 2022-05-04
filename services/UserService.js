@@ -138,6 +138,8 @@ class UserService {
             where: {login : username.toLowerCase()}
         });
 
+        if (!userData) return null;
+
         if (currentUser) {
             const currentUserSubscribed = await sequelize.models.subscribition.findOne({
                 where: {
