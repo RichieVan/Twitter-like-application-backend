@@ -9,19 +9,21 @@ const {QueryTypes, Model} = sqlz;
 
 class PostService {
     async create (user, data) {
-        let result;
-        
-        await sequelize.models.post.create({
+        // let result;
+
+        return await sequelize.models.post.create({
             textContent : data.textContent,
             userId: data.userId,
             type: 'post'
         })
-        
-        result = await this.syncPosts(user, data.params);
-        return result;
 
-        const content = await this.formatPosts(result);
-        return content;
+        // return newPost;
+        //
+        // result = await this.syncPosts(user, data.params);
+        // return result;
+        //
+        // const content = await this.formatPosts(result);
+        // return content;
     }
 
     async formatPosts (posts) {
@@ -31,7 +33,7 @@ class PostService {
         for (let i = 0; i < posts.length; i++) {
             const createdAt = CalculatePostTimestamps(posts[i].createdAt)
             const updatedAt = CalculatePostTimestamps(posts[i].updatedAt)
-            
+
             if (posts[i] instanceof Model) {
                 posts[i].setDataValue('createdAt', createdAt)
                 posts[i].setDataValue('updatedAt', updatedAt)
@@ -45,7 +47,7 @@ class PostService {
             }
 
             content.push(new PostDto(
-                posts[i], 
+                posts[i],
                 userDtos[posts[i].userId]
             ));
         }
@@ -70,7 +72,7 @@ class PostService {
         //     attributes: {
         //         include : [
         //             'id', 'textContent', 'createdAt', 'updatedAt', 'userId',
-        //             [Sequelize.fn('COUNT', [Sequelize.literal(`DISTINCT "Likes.id"`), Sequelize.col('Likes.id')]), 'likesCount'], 
+        //             [Sequelize.fn('COUNT', [Sequelize.literal(`DISTINCT "Likes.id"`), Sequelize.col('Likes.id')]), 'likesCount'],
         //             [Sequelize.fn('COUNT', [Sequelize.literal(`DISTINCT "CmComments.id"`), Sequelize.col('CmComments.id')]), 'commentsCount']
         //         ]
         //     },
@@ -303,7 +305,7 @@ class PostService {
                 `,
                 {
                     replacements : {
-                        ...commentData.params, 
+                        ...commentData.params,
                         postId : commentData.postId
                     },
                     type : QueryTypes.SELECT
@@ -327,7 +329,7 @@ class PostService {
                 }
             )
         }
-        
+
         const content = this.formatPosts(comments);
         return content;
     }
@@ -351,7 +353,7 @@ class PostService {
         if (user) {
             await this.checkLikedByUser(comments, user);
         }
-        
+
         const content = await this.formatPosts(comments);
         return content;
     }
@@ -385,7 +387,7 @@ class PostService {
     }
 
     async deletePost (id) {
-        //deleting comments 
+        //deleting comments
         await sequelize.query(
             `
             DELETE FROM public.posts
@@ -401,7 +403,7 @@ class PostService {
             }
         )
 
-        //deleting post 
+        //deleting post
         await sequelize.models.post.destroy({
             where : {id}
         })
